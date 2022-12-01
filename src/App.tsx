@@ -6,6 +6,7 @@ import { defineTheme } from './static/themes'
 import axios from 'axios'
 import Language from './models/Language'
 import { languageOptions } from './static/languages'
+import InputWindow from './components/InputWIndow'
 
 function App() {
 
@@ -14,7 +15,9 @@ function App() {
   const [ theme, setTheme ] = useState('')
   const [ processing, setProcessing ] = useState(false)
   const [ output, setOutput ] = useState('')
-  const [ error, setError ] = useState('')
+  const [ message, setMessage ] = useState('')
+  const [ showCode, setShowCode ] = useState(true)
+  const [ input, setInput ] = useState('')
 
   useEffect(() => {
     defineTheme("blackboard").then((_) => setTheme("blackboard"))
@@ -32,6 +35,10 @@ function App() {
     switch (type) {
       case "code": {
         setCode(value);
+        break;
+      }
+      case "input": {
+        setInput(value)
         break;
       }
       default: {
@@ -53,13 +60,12 @@ function App() {
         'X-RapidAPI-Key': `${process.env.REACT_APP_RAPID_API_KEY}`,
         'X-RapidAPI-Host': `${process.env.REACT_APP_RAPID_API_HOST}`
       },
-      body: `{"language_id":${language?.id},"source_code":"${window.btoa(code)}","stdin":"SnVkZ2Uw"}`
+      body: `{"language_id":${language?.id},"source_code":"${window.btoa(code)}","stdin":"${window.btoa(input)}"}`
     };
 
     fetch(url, options)
       .then(res => res.json())
       .then(json => {
-        console.log(json)
         handleResults(json.token)
         setProcessing(false)
       })
@@ -80,7 +86,7 @@ function App() {
     fetch(url, options)
     .then(res => res.json())
     .then(json => {
-      setOutput(window.atob(json.compile_output))
+      setMessage(json.message !== null ? window.atob(json.message) : '')
       setOutput(window.atob(json.stdout))
     })
     .catch(err => console.error('error:' + err));
@@ -89,11 +95,15 @@ function App() {
 return (
   <>
     <div id="main">
-      <Header changeLanguage={changeLanguage} changeTheme={changeTheme} language={language} theme={theme} run={run} processing={processing} />
+      <Header changeLanguage={changeLanguage} changeTheme={changeTheme} language={language} theme={theme} run={run} processing={processing} showCode={showCode} setShowCode={setShowCode} />
       <div id="editor-body">
-        <CodeWindow onChange={onChange} width={50} code={code} language={language} theme={theme} />
+        { 
+          showCode ?
+          <CodeWindow onChange={onChange} width={50} code={code} language={language} theme={theme} /> :
+          <InputWindow onChange={onChange} width={50} input={input} theme={theme} />
+        }
         <div id="divider" className="noselect">||</div>
-        <ResultWindow width={50} output={output} error={error} processing={processing} />
+        <ResultWindow width={50} output={output} message={message} processing={processing} />
       </div>
     </div>
     <div id="error">Please only use on desktop</div>

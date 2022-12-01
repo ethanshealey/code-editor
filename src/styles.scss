@@ -40,17 +40,32 @@ body {
     align-items: center;
     height: 100%;
     width: calc(50vw - 30px);
+    #display-switch-btn-container {
+        #display-btn {
+            display: flex;
+            justify-content: left !important;
+            margin-left: 15px;
+        }
+    }
     #run-btn-container {
         width: 100%;
         display: flex;
-        justify-content: right;
+        justify-content: left;
     }
     #run-btn {
         justify-content: right;
         margin-left: 15px;
     }
 }
+.ant-radio-button-wrapper::before {
+    background-color: $foreground-bg !important;
+}
+.ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked) {
+    background-color: $foreground-bg !important;
+    border: none $foreground-bg;
+    color: #fff !important;
 
+}
 #divider {
     width: 10px;
     height: 100%;
