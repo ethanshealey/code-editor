@@ -212,12 +212,6 @@ export const languageOptions = [
       value: "scala",
     },
     {
-      id: 82,
-      name: "SQL (SQLite 3.27.2)",
-      label: "SQL (SQLite 3.27.2)",
-      value: "sql",
-    },
-    {
       id: 83,
       name: "Swift (5.2.3)",
       label: "Swift (5.2.3)",
