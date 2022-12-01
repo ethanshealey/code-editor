@@ -9,11 +9,12 @@ import { languageOptions } from './static/languages'
 
 function App() {
 
-  const [code, setCode] = useState('')
-  const [language, setLanguage] = useState<Language | undefined>(languageOptions[0])
-  const [theme, setTheme] = useState('')
+  const [ code, setCode ] = useState('')
+  const [ language, setLanguage ] = useState<Language | undefined>(languageOptions[0])
+  const [ theme, setTheme ] = useState('')
   const [ processing, setProcessing ] = useState(false)
   const [ output, setOutput ] = useState('')
+  const [ error, setError ] = useState('')
 
   useEffect(() => {
     defineTheme("blackboard").then((_) => setTheme("blackboard"))
@@ -79,12 +80,8 @@ function App() {
     fetch(url, options)
     .then(res => res.json())
     .then(json => {
-      if(json.compile_output) {
-        setOutput(window.atob(json.compile_output))
-      }
-      else {
-        setOutput(window.atob(json.stdout))
-      }
+      setOutput(window.atob(json.compile_output))
+      setOutput(window.atob(json.stdout))
     })
     .catch(err => console.error('error:' + err));
   }
@@ -96,7 +93,7 @@ return (
       <div id="editor-body">
         <CodeWindow onChange={onChange} width={50} code={code} language={language} theme={theme} />
         <div id="divider" className="noselect">||</div>
-        <ResultWindow width={50} output={output} processing={processing} />
+        <ResultWindow width={50} output={output} error={error} processing={processing} />
       </div>
     </div>
     <div id="error">Please only use on desktop</div>
