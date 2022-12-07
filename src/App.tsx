@@ -66,8 +66,15 @@ function App() {
     fetch(url, options)
       .then(res => res.json())
       .then(json => {
-        handleResults(json.token)
-        setProcessing(false)
+        console.log(json)
+        if(json.message) {
+          setMessage(json.message)
+          setProcessing(false)
+        }
+        else {
+          handleResults(json.token)
+          setProcessing(false)
+        }
       })
       .catch(err => console.error('error:' + err));
   }
